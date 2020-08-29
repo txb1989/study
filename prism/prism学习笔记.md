@@ -1,4 +1,6 @@
-#Prism安装
+### [学习博客    https://www.cnblogs.com/ryzen/p/12610249.html](https://www.cnblogs.com/ryzen/p/12610249.html)
+
+#### Prism安装
 
 * nuget安装Prism.Unity包，包含了Prism.WPF、Prism.Container和Prism.Unity.WPF
 * 修改App.xaml.cs的基类，继承自PrismApplication，重写对应的RegisterTypes和CreateShell两个抽象方法，App.xaml增加prism的命名空间，然后修改标签未prism:PrismApplication，去掉StartupUri
@@ -57,3 +59,48 @@
   > Code-Behind：没什么改变
   >
   > xaml：引入Prism名字控件，然后设置prism:ViewModelLocator.AutoWireViewModel="True"
+  
+* ViewModel
+
+  > ViewModel继承自Prism.Mvvm.BindableBase
+  >
+  > 属性改变使用SetProperty通知，即在属性的Set方法使用SetProperty(ref _text, value);
+
+#### Command
+
+- 普通使用
+
+> DelegateCommand包含两个版本，一个带泛型的，一个不带泛型的。不带泛型的绑定的是一个无参的方法。带泛型的绑定带一个参数的方法。如：
+>
+> ```c#
+>  private DelegateCommand _clickCommnd;
+>         public DelegateCommand ClickCommnd =>
+>             _clickCommnd ?? (_clickCommnd = new DelegateCommand(()=> { }));
+> 
+>         private DelegateCommand<object> _inputTextChangeCommand;
+> 
+>         public DelegateCommand<object> InputTextChangeCommand => _inputTextChangeCommand ?? (_inputTextChangeCommand = new DelegateCommand<object>(content =>
+>             {
+>                 Text = content?.ToString() ?? "";
+>             }));
+> ```
+
+- 基于Task的Command
+
+  ```c#
+          public DelegateCommand AsyncCommand => _asyncCommand ?? (_asyncCommand = new DelegateCommand(async () =>
+          {
+              await Task.FromResult(0);
+          }));
+  ```
+
+- 复合命令
+
+  content
+
+  创建和使用一个prism标准复合命令的流程：
+
+  - 创建一个全局的复合命令
+  - 通过IOC容器注册其为单例
+  - 给复合命令注册子命令
+  - 绑定复合命令

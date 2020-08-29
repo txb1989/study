@@ -259,3 +259,26 @@ Pipeline {
       }
   }
   ```
+
+#### enviroment指令
+
+该指令指定一系列键值队，这些键值队将被定义为所有步骤的环境变量或阶段特定步骤，具体取决于environment指令位于Pipeline中的位置。代码举例：
+
+```groovy
+pipeline {
+    agent any
+    environment {
+        unit_test = true
+    }
+    stages {
+        stage('Example') {
+            steps {
+                if(unit_test == true) {
+                   // call run unit test methods
+                }
+            }
+        }
+    }
+}
+```
+
